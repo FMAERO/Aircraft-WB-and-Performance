@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baron G58 — Load Sheet</title>
+<style>
+  :root{
+    --bg:#f2f4f7; --card:#fff; --ink:#141c26; --muted:#5b6875; --line:#d8dee6;
+    --accent:#0b5fa5; --accent-soft:#eaf3fb;
+    --ok:#15693a; --ok-soft:#edfaf1;
+    --warn:#8a5a00; --warn-soft:#fdf6e6;
+    --bad:#a51b1b; --bad-soft:#fdeeee;
+    --sh:0 1px 2px rgba(16,24,40,.06),0 1px 4px rgba(16,24,40,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:14.5px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%}
+  .wrap{max-width:900px;margin:0 auto;padding:18px 14px 70px}
+  h1{font-size:19px;margin:0 0 2px;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:12.5px;margin:0 0 16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:11px;
+    padding:14px 15px;margin-bottom:12px;box-shadow:var(--sh)}
+  .card>h2{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+    margin:0 0 11px;font-weight:700}
+  table.grid{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  table.grid th{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);
+    text-align:right;font-weight:700;padding:0 4px 6px;border-bottom:1px solid var(--line)}
+  table.grid th:first-child{text-align:left}
+  table.grid td{padding:4px;border-bottom:1px dashed #eceff3;vertical-align:middle}
+  table.grid tr:last-child td{border-bottom:none}
+  td.lbl{font-weight:600;font-size:13.5px}
+  td.lbl small{display:block;font-weight:400;font-size:11px;color:var(--muted)}
+  td.mom{text-align:right;color:var(--muted);font-size:13px}
+  input[type=number]{width:100%;padding:6px 7px;font-size:14px;text-align:right;
+    border:1.5px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);
+    font-variant-numeric:tabular-nums;font-family:inherit}
+  input[type=number]:focus{outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(11,95,165,.13)}
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  input[type=number]{-moz-appearance:textfield}
+  select{width:100%;padding:8px 9px;font-size:13.5px;font-family:inherit;
+    border:1.5px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+  select:focus{outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(11,95,165,.13)}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+  .row>label{flex:1 1 130px;min-width:110px;display:block}
+  .row>label span{display:block;font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:4px}
+  .calc{flex:0 0 auto;min-width:92px;text-align:right}
+  .calc span{display:block;font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:4px}
+  .calc output{display:block;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;padding:4px 0}
+  .readout{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+  @media(max-width:640px){.readout{grid-template-columns:repeat(2,1fr)}}
+  .ro{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fafbfc}
+  .ro b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--muted);font-weight:700;margin-bottom:2px}
+  .ro span{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+  .ro.hl{border-color:#b6d7b9;background:var(--ok-soft)}
+  .ro.wn{border-color:#e6cf9a;background:var(--warn-soft)}
+  .ro.ac{border-color:#b9cfe6;background:var(--accent-soft)}
+  .scroller{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table.res{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:560px}
+  table.res th,table.res td{padding:7px 8px;text-align:right;font-size:13.5px}
+  table.res thead th{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);font-weight:700;border-bottom:1.5px solid var(--line);padding-bottom:8px}
+  table.res tbody th{text-align:left;font-size:11.5px;font-weight:600;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+  table.res td{font-weight:600}
+  table.res tbody tr:first-child td{font-size:17px;font-weight:700;padding-top:10px}
+  table.res tbody tr+tr th,table.res tbody tr+tr td{border-top:1px dashed #eceff3}
+  .cellbad{background:var(--bad-soft)}
+  .st-ok{color:var(--ok);font-weight:700}
+  .st-bad{color:var(--bad);font-weight:700}
+  .msg{border-radius:8px;padding:9px 11px;font-size:13px;margin-top:9px;border-left:4px solid}
+  .msg.ok{border-color:var(--ok);background:var(--ok-soft)}
+  .msg.warn{border-color:#d69e2e;background:var(--warn-soft)}
+  .msg.bad{border-color:var(--bad);background:var(--bad-soft)}
+  .msg.info{border-color:var(--accent);background:var(--accent-soft)}
+  svg{display:block;width:100%;height:auto}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+  input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 0}
+  .foot{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:14px}
+  .btnrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:2px}
+  button{font:inherit;font-size:13.5px;font-weight:600;padding:9px 15px;border-radius:8px;
+    border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+  button:hover{background:#f7f9fb;border-color:#bcc6d1}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  button.primary:hover{background:#0a5290;border-color:#0a5290}
+  @media print{
+    body{background:#fff}.wrap{max-width:none;padding:0}
+    .card{box-shadow:none;break-inside:avoid}.btnrow{display:none}
+    input[type=number],select{border:none;padding:0;background:transparent}
+    input[type=range]{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Baron G58 — Load Sheet</h1>
+  <p class="sub">Free fuel entry + SOP crediting · four-point check · Ramp 5,524 · Takeoff 5,500 · Landing 5,400</p>
+
+  <!-- AIRFRAME -->
+  <section class="card">
+    <h2>Aircraft</h2>
+    <div class="row">
+      <label style="flex:2 1 240px"><span>Airframe</span>
+        <select id="airframe">
+          <option value="FDAA" selected>C-FDAA — automatic climate control</option>
+          <option value="FDTS">C-FDTS — manual heater / blower</option>
+        </select></label>
+    </div>
+    <div class="readout">
+      <div class="ro"><b>Basic empty weight</b><span id="roBew">—</span></div>
+      <div class="ro"><b>BEW moment/100</b><span id="roMom">—</span></div>
+      <div class="ro"><b>BEW arm</b><span id="roArm">—</span></div>
+      <div class="ro"><b>Useful load</b><span id="roUse">—</span></div>
+    </div>
+  </section>
+
+  <!-- OCCUPANTS -->
+  <section class="card">
+    <h2>Occupants</h2>
+    <table class="grid">
+      <thead><tr><th>Station</th><th style="width:82px">Weight</th>
+        <th style="width:72px">Arm</th><th style="width:66px">Mom/100</th></tr></thead>
+      <tbody id="occBody"></tbody>
+    </table>
+  </section>
+
+  <!-- BAGGAGE -->
+  <section class="card">
+    <h2>Baggage</h2>
+    <table class="grid">
+      <thead><tr><th>Compartment</th><th style="width:82px">Weight</th>
+        <th style="width:72px">Arm</th><th style="width:66px">Mom/100</th></tr></thead>
+      <tbody id="bagBody"></tbody>
+    </table>
+  </section>
+
+  <!-- FUEL DEPARTURE -->
+  <section class="card">
+    <h2>Fuel — departure</h2>
+    <div class="row">
+      <label style="flex:2 1 260px"><span>Usable fuel on board (gal) — enter freely</span>
+        <input type="number" id="fuelActual" value="166" step="1" min="0" max="194"></label>
+      <div class="calc"><span>Mom/100</span><output id="actMom">—</output></div>
+      <div class="calc"><span>Weight</span><output id="actLb">—</output></div>
+    </div>
+    <input type="range" id="fuelSlider" min="0" max="194" step="1" value="166"
+           aria-label="Usable fuel on board">
+
+    <div class="row" style="margin-top:14px">
+      <label style="flex:2 1 300px"><span>SOP crediting rule — applied on top of the quantity above</span>
+        <select id="fuelRule">
+          <option value="auto" selected>Auto — pick the rule from the quantity entered</option>
+          <option value="full">Tip tanks full · assume 194 · credit 194</option>
+          <option value="tabs">Tabs only · assume 166 · credit 166</option>
+          <option value="above">Above tabs, not full · assume 194 · credit 166</option>
+          <option value="below">Below tabs, above 60 gal · assume 166 · credit 120</option>
+          <option value="measured">60 gal or less, measured · credit actual</option>
+          <option value="off">No crediting · use the actual quantity</option>
+        </select></label>
+    </div>
+
+    <div class="readout">
+      <div class="ro wn"><b>Assume for W&amp;B</b><span id="roAssume">—</span></div>
+      <div class="ro hl"><b>Planning credit</b><span id="roCredit">—</span></div>
+      <div class="ro"><b>Penalty</b><span id="roPenalty">—</span></div>
+      <div class="ro ac"><b>Takeoff fuel (endurance basis)</b><span id="roTakeoff">—</span></div>
+    </div>
+    <div id="fuelNote"></div>
+  </section>
+
+  <!-- DESTINATION -->
+  <section class="card">
+    <h2>Fuel — at destination &amp; endurance</h2>
+    <div class="row">
+      <label style="flex:2 1 200px"><span>Expected fuel at destination (gal)</span>
+        <input type="number" id="fuelDest" value="60" step="1" min="0" max="194"></label>
+      <div class="calc"><span>Mom/100</span><output id="destMom">—</output></div>
+      <div class="calc"><span>Weight</span><output id="destLb">—</output></div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <label style="flex:2 1 200px"><span>Total burn for endurance (gal/hr, both engines)</span>
+        <input type="number" id="burnRate" value="34" step="0.5" min="10" max="60"></label>
+      <label style="flex:1 1 140px"><span>TAS (kt)</span>
+        <input type="number" id="tas" value="170" step="1" min="100" max="220"></label>
+    </div>
+    <div id="endurNote"></div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="card">
+    <h2>Load sheet</h2>
+    <div class="scroller">
+      <table class="res">
+        <colgroup><col><col><col><col><col></colgroup>
+        <thead>
+          <tr><th style="text-align:left"></th>
+            <th>Zero fuel</th><th>Ramp</th><th>Takeoff</th><th>Landing</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>Weight</th>
+            <td id="wZ">—</td><td id="wR">—</td><td id="wT">—</td><td id="wL">—</td></tr>
+          <tr><th>Fuel gal</th>
+            <td id="fZ">—</td><td id="fR">—</td><td id="fT">—</td><td id="fL">—</td></tr>
+          <tr><th>Credit gal</th>
+            <td id="cZ">—</td><td id="cR">—</td><td id="cT">—</td><td id="cL">—</td></tr>
+          <tr><th>Mom/100</th>
+            <td id="mZ">—</td><td id="mR">—</td><td id="mT">—</td><td id="mL">—</td></tr>
+          <tr><th>CG</th>
+            <td id="gZ">—</td><td id="gR">—</td><td id="gT">—</td><td id="gL">—</td></tr>
+          <tr><th>Limits</th>
+            <td id="lZ">—</td><td id="lR">—</td><td id="lT">—</td><td id="lL">—</td></tr>
+          <tr><th>Status</th>
+            <td id="sZ">—</td><td id="sR">—</td><td id="sT">—</td><td id="sL">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="warnBox"></div>
+  </section>
+
+  <!-- CHART -->
+  <section class="card">
+    <h2>CG envelope</h2>
+    <svg id="chart" viewBox="0 0 520 340" role="img" aria-label="CG envelope"></svg>
+    <div class="legend">
+      <span><i style="background:#0b5fa5"></i>Zero fuel</span>
+      <span><i style="background:#6b46a8"></i>Ramp</span>
+      <span><i style="background:#15693a"></i>Takeoff</span>
+      <span><i style="background:#8a5a00"></i>Landing</span>
+    </div>
+  </section>
+
+  <div class="btnrow">
+    <button class="primary" onclick="window.print()">Print / save PDF</button>
+    <button onclick="resetAll()">Reset</button>
+  </div>
+
+  <p class="foot">
+    <b>Arms:</b> front seats 78.5 · 3rd &amp; 4th 117.5 · nose 15 · aft of rear spar 150 · aft compartment 180.
+    Takeoff = ramp − 24 lb / − 20 moment–100 (start, taxi, runup).
+    <b>Endurance is computed from takeoff fuel</b>, not ramp fuel — the taxi allowance is ground time
+    and never contributes to airborne endurance.
+    Moments interpolated from the POH Section 6 tables; CG limits from the Moment Limits table
+    (below 3,800 lb the 3,800 lb row applies).
+    Fuel quantity is a free entry; the SOP crediting rule then decides what weight you must assume
+    and what you may plan on. Planning scratchpad, not an approved load sheet.
+  </p>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= DATA ================= */
+
+  const AIRFRAMES = {
+    FDAA: {bew: 3978.64, mom: 3184.87, label:'C-FDAA'},
+    FDTS: {bew: 3956.37, mom: 3078.85, label:'C-FDTS'}
+  };
+
+  const LIMITS = [
+    [3800,2812,3268],[3850,2849,3311],[3900,2886,3354],[3950,2923,3397],
+    [4000,2960,3440],[4050,2997,3483],[4100,3034,3526],[4150,3071,3569],
+    [4200,3108,3612],[4250,3152,3655],[4300,3196,3698],[4350,3241,3741],
+    [4400,3285,3784],[4450,3330,3827],[4500,3375,3870],[4550,3420,3913],
+    [4600,3465,3956],[4650,3510,3999],[4700,3556,4042],[4750,3601,4085],
+    [4800,3647,4128],[4850,3693,4171],[4900,3740,4214],[4950,3786,4257],
+    [5000,3832,4300],[5050,3879,4343],[5100,3926,4386],[5150,3973,4429],
+    [5200,4020,4472],[5250,4067,4515],[5300,4115,4558],[5350,4163,4601],
+    [5400,4210,4644],[5450,4258,4687],[5500,4307,4730]
+  ];
+
+  const FUEL = [
+    [0,0],[10,46],[20,92],[30,140],[40,189],[50,238],[60,288],[70,338],
+    [80,388],[90,439],[100,489],[110,539],[120,590],[130,641],[140,692],
+    [150,743],[160,793],[166,824],[170,845],[180,899],[190,953],[194,974]
+  ];
+
+  const OCC = [
+    {id:'pilot', label:'Pilot',     sub:'front left · 78.5',  arm:78.5},
+    {id:'fpax',  label:'Front pax', sub:'front right · 78.5', arm:78.5},
+    {id:'s3',    label:'3rd seat',  sub:'117.5',              arm:117.5},
+    {id:'s4',    label:'4th seat',  sub:'117.5',              arm:117.5}
+  ];
+
+  const BAG = [
+    {id:'nose', label:'Nose compartment', sub:'limit 300 lb', arm:15,  max:300},
+    {id:'rear', label:'Aft of rear spar', sub:'limit 380 lb', arm:150, max:380},
+    {id:'aft',  label:'Aft compartment',  sub:'limit 120 lb', arm:180, max:120}
+  ];
+
+  const LB_PER_GAL = 6;
+  const MAX_RAMP = 5524, MAX_TO = 5500, MAX_LDG = 5400;
+  const TAXI_LB = 24, TAXI_MOM = 20;
+  const TAXI_GAL = TAXI_LB / LB_PER_GAL;      // 4 gal
+
+  const RULE_LABEL = {
+    full:'tips full', tabs:'tabs only', above:'above tabs',
+    below:'below tabs', measured:'measured', off:'no crediting'
+  };
+
+  /* ================= HELPERS ================= */
+
+  const $ = id => document.getElementById(id);
+  const num = id => { const v = parseFloat($(id).value); return isFinite(v) ? v : 0; };
+  const fmt0 = n => Math.round(n).toLocaleString();
+  const fmt1 = n => (Math.round(n*10)/10).toFixed(1);
+  const clamp = (v,lo,hi) => Math.min(hi, Math.max(lo, v));
+
+  function fuelMoment(gal){
+    if(gal <= 0) return 0;
+    if(gal >= 194) return 974;
+    for(let i=1;i<FUEL.length;i++){
+      if(gal <= FUEL[i][0]){
+        const g0=FUEL[i-1][0], m0=FUEL[i-1][1];
+        const g1=FUEL[i][0],   m1=FUEL[i][1];
+        return m0 + (gal-g0)*(m1-m0)/(g1-g0);
+      }
+    }
+    return 974;
+  }
+
+  function limitsAt(w){
+    if(w <= LIMITS[0][0]) return {fwd:LIMITS[0][1], aft:LIMITS[0][2]};
+    const last = LIMITS[LIMITS.length-1];
+    if(w >= last[0]) return {fwd:last[1], aft:last[2]};
+    for(let i=1;i<LIMITS.length;i++){
+      if(w <= LIMITS[i][0]){
+        const w0=LIMITS[i-1][0], f0=LIMITS[i-1][1], a0=LIMITS[i-1][2];
+        const w1=LIMITS[i][0],   f1=LIMITS[i][1],   a1=LIMITS[i][2];
+        const t=(w-w0)/(w1-w0);
+        return {fwd:f0+t*(f1-f0), aft:a0+t*(a1-a0)};
+      }
+    }
+    return {fwd:last[1], aft:last[2]};
+  }
+
+  function point(weight, moment100){
+    if(weight <= 0) return {w:0,cg:0,mom:0,state:'none',fwdCG:0,aftCG:0};
+    const lim = limitsAt(weight);
+    const cg = moment100 * 100 / weight;
+    let state = 'ok';
+    if(moment100 > lim.aft) state = 'aft';
+    else if(moment100 < lim.fwd) state = 'fwd';
+    return {w:weight, cg, mom:moment100, state,
+            fwdCG: lim.fwd*100/weight, aftCG: lim.aft*100/weight};
+  }
+
+  /* ================= CREDITING ================= */
+
+  function detectRule(a){
+    if(a <= 60) return 'measured';
+    if(a > 166 + 0.001) return (a >= 194 - 0.001) ? 'full' : 'above';
+    if(Math.abs(a - 166) <= 0.001) return 'tabs';
+    return 'below';
+  }
+
+  function crediting(){
+    const actual = clamp(num('fuelActual'), 0, 194);
+    const selected = $('fuelRule').value;
+    const autoRule = detectRule(actual);
+    const rule = selected === 'auto' ? autoRule : selected;
+    const meas = Math.floor(actual);
+
+    let assume, credit;
+    switch(rule){
+      case 'full':     assume = 194; credit = 194; break;
+      case 'tabs':     assume = 166; credit = 166; break;
+      case 'above':    assume = 194; credit = 166; break;
+      case 'below':    assume = 166; credit = 120; break;
+      case 'measured': assume = meas; credit = meas; break;
+      default:         assume = actual; credit = actual; break;
+    }
+    return {actual, assume, credit, rule, autoRule, selected, meas};
+  }
+
+  function ruleNote(c){
+    const P = c.assume*LB_PER_GAL - c.credit*LB_PER_GAL;
+    switch(c.rule){
+      case 'full': return {k:'info',
+        t:'<b>Tip tanks full.</b> Assume and credit 194 gal — no penalty. Full fuel costs about 168 lb of payload versus tabs.'};
+      case 'tabs': return {k:'info',
+        t:'<b>Tabs only.</b> Assume and credit 166 gal — no penalty. This is the standard order.'};
+      case 'above': return {k:'warn',
+        t:`<b>Above tabs, not full.</b> You must carry 194 gal of fuel weight but may only plan on 166 — <b>${fmt0(P)} lb of dead weight</b>. Fuelling past tabs buys nothing; either stop at tabs or go to full.`};
+      case 'below': return {k:'warn',
+        t:`<b>Below tabs, above 60 gal.</b> Assume 166 gal of fuel weight, credit only 120 — <b>${fmt0(P)} lb of dead weight</b>.`};
+      case 'measured': return {k:'info',
+        t:`<b>Measured.</b> At 60 gal or less the sight gauge and cockpit gauges may be used to credit the actual amount. ${c.meas} gal credited (rounded down). Remember the 5-gal indication lag.`};
+      default: return {k:'info',
+        t:'<b>No crediting applied.</b> Assume and credit equal the quantity entered — useful for comparison, but not the SOP method.'};
+    }
+  }
+
+  /* ================= ROW BUILDING ================= */
+
+  function buildRows(){
+    $('occBody').innerHTML = OCC.map(o => `
+      <tr>
+        <td class="lbl">${o.label}<small>${o.sub}</small></td>
+        <td style="width:82px"><input type="number" id="w_${o.id}" value="0" min="0" max="600" step="1"></td>
+        <td style="width:72px"><input type="number" id="a_${o.id}" value="${o.arm}" min="60" max="200" step="0.1"></td>
+        <td class="mom" id="m_${o.id}">0</td>
+      </tr>`).join('');
+
+    $('bagBody').innerHTML = BAG.map(b => `
+      <tr>
+        <td class="lbl">${b.label}<small>${b.sub}</small></td>
+        <td style="width:82px"><input type="number" id="w_${b.id}" value="0" min="0" max="${b.max}" step="1"></td>
+        <td style="width:72px"><input type="number" id="a_${b.id}" value="${b.arm}" min="0" max="220" step="0.1"></td>
+        <td class="mom" id="m_${b.id}">0</td>
+      </tr>`).join('');
+  }
+
+  /* ================= MAIN ================= */
+
+  function compute(){
+    /* --- airframe --- */
+    const af = AIRFRAMES[$('airframe').value];
+    const bewArm = af.mom * 100 / af.bew;
+    $('roBew').textContent = af.bew.toFixed(2) + ' lb';
+    $('roMom').textContent = af.mom.toFixed(2);
+    $('roArm').textContent = bewArm.toFixed(2) + ' in';
+    $('roUse').textContent = (MAX_RAMP - af.bew).toFixed(1) + ' lb';
+
+    /* --- zero fuel --- */
+    let zfw = af.bew, zMom = af.mom;
+
+    OCC.forEach(o => {
+      const w = num('w_'+o.id), a = num('a_'+o.id);
+      const m = w * a / 100;
+      $('m_'+o.id).textContent = fmt0(m);
+      zfw += w; zMom += m;
+    });
+
+    BAG.forEach(b => {
+      const w = num('w_'+b.id), a = num('a_'+b.id);
+      const m = w * a / 100;
+      $('m_'+b.id).textContent = fmt0(m);
+      zfw += w; zMom += m;
+    });
+
+    /* --- fuel / crediting --- */
+    const c = crediting();
+    $('fuelSlider').value = c.actual;
+
+    const actMom = fuelMoment(c.actual), actLb = c.actual * LB_PER_GAL;
+    $('actMom').textContent = fmt0(actMom);
+    $('actLb').textContent  = fmt0(actLb) + ' lb';
+
+    const assumeLb  = c.assume * LB_PER_GAL;
+    const assumeMom = fuelMoment(c.assume);
+    const creditLb  = c.credit * LB_PER_GAL;
+    const penalty   = assumeLb - creditLb;
+
+    /* --- ENDURANCE BASIS: takeoff fuel, not ramp --- */
+    const takeoffGal  = Math.max(0, c.credit - TAXI_GAL);   // credit less taxi allowance
+    const takeoffLb   = takeoffGal * LB_PER_GAL;
+
+    $('roAssume').textContent  = c.assume + ' gal · ' + fmt0(assumeLb) + ' lb';
+    $('roCredit').textContent  = c.credit + ' gal · ' + fmt0(creditLb) + ' lb';
+    $('roPenalty').textContent = penalty > 0 ? '−' + fmt0(penalty) + ' lb' : 'none';
+    $('roTakeoff').textContent = fmt0(takeoffGal) + ' gal · ' + fmt0(takeoffLb) + ' lb';
+
+    /* --- fuel notes --- */
+    let fnote = '';
+    const n = ruleNote(c);
+    fnote += `<div class="msg ${n.k}">${n.t}</div>`;
+
+    if(c.selected === 'auto'){
+      fnote += `<div class="msg info">Auto selected <b>${RULE_LABEL[c.autoRule]}</b> for
+        ${c.actual} gal.</div>`;
+    } else if(c.selected !== c.autoRule){
+      fnote += `<div class="msg warn">Manual override: <b>${RULE_LABEL[c.selected]}</b>
+        selected, but ${c.actual} gal would normally be <b>${RULE_LABEL[c.autoRule]}</b>.</div>`;
+    }
+
+    const mismatch = [];
+    if(c.selected === 'tabs' && c.actual > 166.001) mismatch.push('tabs but more than 166 gal entered');
+    if(c.selected === 'full' && c.actual < 193.999) mismatch.push('tips full but less than 194 gal entered');
+    if(c.selected === 'above' && (c.actual <= 166.001 || c.actual >= 193.999)) mismatch.push('above tabs needs a quantity strictly between 166 and 194');
+    if(c.selected === 'below' && (c.actual <= 60 || c.actual >= 166)) mismatch.push('below tabs needs a quantity between 60 and 166');
+    if(c.selected === 'measured' && c.actual > 60) mismatch.push('measured credit is only valid at 60 gal or less');
+    if(mismatch.length){
+      fnote += `<div class="msg warn"><b>Quantity and rule disagree:</b>
+        ${mismatch.join('; ')}. Results below use the rule as selected.</div>`;
+    }
+
+    if(c.assume < 26){
+      fnote += `<div class="msg bad"><b>${c.assume} gal total is below 26 gal</b> — you cannot
+        have 13 gal in each wing. Not legal for takeoff.</div>`;
+    }
+    $('fuelNote').innerHTML = fnote;
+
+    /* --- destination fuel --- */
+    const dstGal = clamp(num('fuelDest'), 0, 194);
+    const dstMom = fuelMoment(dstGal);
+    const dstLb  = dstGal * LB_PER_GAL;
+    $('destMom').textContent = fmt0(dstMom);
+    $('destLb').textContent  = fmt0(dstLb) + ' lb';
+
+    /* --- four points --- */
+    const pZ = point(zfw, zMom);
+
+    const rampW = zfw + assumeLb, rampM = zMom + assumeMom;
+    const pR = point(rampW, rampM);
+
+    const toW = rampW - TAXI_LB, toM = rampM - TAXI_MOM;
+    const pT = point(toW, toM);
+
+    const ldgW = zfw + dstLb, ldgM = zMom + dstMom;
+    const pL = point(ldgW, ldgM);
+
+    const toGalAssumed = Math.max(0, c.assume - TAXI_GAL);
+
+    /* --- render --- */
+    renderCol('Z', pZ, 0, 0, null);
+    renderCol('R', pR, c.assume, c.credit, MAX_RAMP);
+    renderCol('T', pT, toGalAssumed, takeoffGal, MAX_TO);
+    renderCol('L', pL, dstGal, dstGal, MAX_LDG);
+
+    /* --- endurance from TAKEOFF fuel --- */
+    const burn = Math.max(1, num('burnRate'));
+    const tas  = Math.max(1, num('tas'));
+    const endHr    = takeoffGal / burn;
+    const reserve  = burn * 0.75;
+    const usableHr = Math.max(0, (takeoffGal - reserve) / burn);
+    const usableGal = Math.max(0, takeoffGal - reserve);
+
+    let en = `<div class="msg info">
+      Endurance basis is <b>takeoff fuel</b>: planning credit ${c.credit} gal
+      − ${TAXI_GAL} gal start/taxi/runup = <b>${fmt0(takeoffGal)} gal</b>.<br>
+      Total endurance <b>${hrmm(endHr)}</b> at ${burn} gph.
+      After a 45-minute reserve (${fmt0(reserve)} gal):
+      <b>${hrmm(usableHr)}</b> / <b>${fmt0(usableGal)} gal</b> / ≈ ${fmt0(usableHr*tas)} nm at ${tas} kt.
+    </div>`;
+
+    if(dstGal > takeoffGal){
+      en += `<div class="msg warn"><b>Destination fuel exceeds takeoff fuel.</b>
+        ${dstGal} gal expected at landing vs ${fmt0(takeoffGal)} gal at brake release — check the entries.</div>`;
+    } else if(dstGal > usableGal){
+      en += `<div class="msg warn"><b>${dstGal} gal at destination leaves less than a
+        45-minute reserve</b> (${fmt0(usableGal)} gal after reserve).</div>`;
+    }
+    $('endurNote').innerHTML = en;
+
+    /* --- warnings --- */
+    const out = [];
+
+    BAG.forEach(b => {
+      const w = num('w_'+b.id);
+      if(w > b.max) out.push({k:'bad',
+        t:`<b>${b.label} over limit:</b> ${fmt0(w)} lb entered, maximum ${fmt0(b.max)} lb.`});
+    });
+
+    if(dstGal > c.actual) out.push({k:'warn',
+      t:`<b>Destination fuel exceeds fuel on board.</b> ${dstGal} gal expected at landing vs
+         ${c.actual} gal at departure — check the entries.`});
+
+    if(rampW > MAX_RAMP) out.push({k:'bad',
+      t:`<b>Ramp weight ${fmt0(rampW)} lb exceeds 5,524 lb</b> by ${fmt0(rampW-MAX_RAMP)} lb.`});
+    if(toW > MAX_TO) out.push({k:'bad',
+      t:`<b>Takeoff weight ${fmt0(toW)} lb exceeds 5,500 lb</b> by ${fmt0(toW-MAX_TO)} lb.`});
+    if(ldgW > MAX_LDG) out.push({k:'bad',
+      t:`<b>Landing weight ${fmt0(ldgW)} lb exceeds 5,400 lb</b> by ${fmt0(ldgW-MAX_LDG)} lb.`});
+
+    [[pZ,'Zero fuel'],[pR,'Ramp'],[pT,'Takeoff'],[pL,'Landing']].forEach(([p,name]) => {
+      if(p.state === 'aft') out.push({k:'bad',
+        t:`<b>${name} CG ${fmt1(p.cg)} in is aft of the limit</b> (${fmt1(p.aftCG)} in). Move load forward.`});
+      if(p.state === 'fwd') out.push({k:'bad',
+        t:`<b>${name} CG ${fmt1(p.cg)} in is forward of the limit</b> (${fmt1(p.fwdCG)} in). Move load aft.`});
+    });
+
+    if(out.length === 0){
+      out.push({k:'ok',
+        t:'Within weight and CG limits at zero fuel, ramp, takeoff and landing. ' +
+          'All baggage compartments within their maximums.'});
+    }
+    $('warnBox').innerHTML = out.map(o => `<div class="msg ${o.k}">${o.t}</div>`).join('');
+
+    drawChart([pZ, pR, pT, pL]);
+  }
+
+  function hrmm(h){
+    if(!isFinite(h) || h <= 0) return '0:00';
+    const t = Math.round(h*60);
+    return Math.floor(t/60) + ':' + String(t%60).padStart(2,'0');
+  }
+
+  function renderCol(key, p, fuelGal, creditGal, maxW){
+    const overWeight = maxW !== null && p.w > maxW;
+    const bad = overWeight || p.state === 'aft' || p.state === 'fwd';
+
+    ['w','f','c','m','g','l','s'].forEach(pre => {
+      const el = $(pre+key);
+      if(el) el.classList.toggle('cellbad', bad);
+    });
+
+    $('w'+key).textContent = p.w > 0 ? fmt0(p.w) + ' lb' : '—';
+    $('f'+key).textContent = p.w > 0 ? fmt0(fuelGal) + ' gal' : '—';
+    $('c'+key).textContent = p.w > 0 ? fmt0(creditGal) + ' gal' : '—';
+    $('m'+key).textContent = p.mom > 0 ? fmt0(p.mom) : '—';
+    $('g'+key).textContent = p.cg > 0 ? fmt1(p.cg) + ' in' : '—';
+    $('l'+key).textContent = p.w > 0 ? fmt1(p.fwdCG) + '–' + fmt1(p.aftCG) : '—';
+
+    let st, cls;
+    if(p.w <= 0){ st = '—'; cls = ''; }
+    else if(overWeight){ st = 'Over weight'; cls = 'st-bad'; }
+    else if(p.state === 'aft'){ st = 'Aft of limit'; cls = 'st-bad'; }
+    else if(p.state === 'fwd'){ st = 'Fwd of limit'; cls = 'st-bad'; }
+    else { st = 'OK'; cls = 'st-ok'; }
+    const el = $('s'+key);
+    el.textContent = st;
+    el.className = cls;
+  }
+
+  /* ================= CHART ================= */
+
+  function drawChart(pts){
+    const x0=64, x1=482, yTop=22, yBot=286;
+    const cgMin=73, cgMax=87, wMin=3700, wMax=5600;
+    const gx = c => x0 + (c-cgMin)/(cgMax-cgMin)*(x1-x0);
+    const gy = w => yBot - (w-wMin)/(wMax-wMin)*(yBot-yTop);
+
+    let s = '';
+
+    for(let cg=74; cg<=86; cg+=2){
+      s += `<line x1="${gx(cg)}" y1="${yTop}" x2="${gx(cg)}" y2="${yBot}" stroke="#e6eaef"/>`;
+      s += `<text x="${gx(cg)}" y="${yBot+16}" font-size="10" fill="#5b6875"
+             text-anchor="middle">${cg}</text>`;
+    }
+    for(let w=4000; w<=5500; w+=500){
+      s += `<line x1="${x0}" y1="${gy(w)}" x2="${x1}" y2="${gy(w)}" stroke="#e6eaef"/>`;
+      s += `<text x="${x0-8}" y="${gy(w)+3.5}" font-size="10" fill="#5b6875"
+             text-anchor="end">${w}</text>`;
+    }
+
+    s += `<line x1="${x0}" y1="${yBot}" x2="${x1}" y2="${yBot}" stroke="#9aa6b3" stroke-width="1.5"/>`;
+    s += `<line x1="${x0}" y1="${yTop}" x2="${x0}" y2="${yBot}" stroke="#9aa6b3" stroke-width="1.5"/>`;
+    s += `<text x="${(x0+x1)/2}" y="322" font-size="11" fill="#5b6875"
+           text-anchor="middle">CG — inches aft of datum</text>`;
+    s += `<text x="15" y="${(yTop+yBot)/2}" font-size="11" fill="#5b6875" text-anchor="middle"
+           transform="rotate(-90 15 ${(yTop+yBot)/2})">Weight — lb</text>`;
+
+    const fwdPts = LIMITS.map(r => [gx(r[1]*100/r[0]), gy(r[0])]);
+    const aftPts = LIMITS.map(r => [gx(r[2]*100/r[0]), gy(r[0])]).reverse();
+    const poly = fwdPts.concat(aftPts)
+      .map(p => p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+    s += `<polygon points="${poly}" fill="#eaf3fb" fill-opacity=".85"
+           stroke="#0b5fa5" stroke-width="1.6" stroke-linejoin="round"/>`;
+
+    const meta = [
+      {label:'ZFW',  color:'#0b5fa5'},
+      {label:'RAMP', color:'#6b46a8'},
+      {label:'TO',   color:'#15693a'},
+      {label:'LDG',  color:'#8a5a00'}
+    ];
+
+    const placed = [];
+    pts.forEach((p,i) => {
+      if(!p || p.w <= 0) return;
+      const px = gx(p.cg), py = gy(p.w);
+      const col = meta[i].color;
+
+      let ly = py + 3.5;
+      while(placed.some(q => Math.abs(q.x - (px+9)) < 34 && Math.abs(q.y - ly) < 11)) ly += 11;
+      placed.push({x: px+9, y: ly});
+
+      s += `<circle cx="${px}" cy="${py}" r="5.5" fill="${col}" fill-opacity=".92"
+             stroke="#fff" stroke-width="1.6"/>`;
+      s += `<text x="${px+9}" y="${ly}" font-size="10.5" font-weight="700"
+             fill="${col}">${meta[i].label}</text>`;
+    });
+
+    $('chart').innerHTML = s;
+  }
+
+  /* ================= WIRING ================= */
+
+  function resetAll(){
+    $('airframe').value = 'FDAA';
+    OCC.forEach(o => { $('w_'+o.id).value = 0; $('a_'+o.id).value = o.arm; });
+    BAG.forEach(b => { $('w_'+b.id).value = 0; $('a_'+b.id).value = b.arm; });
+    $('fuelActual').value = 166;
+    $('fuelSlider').value = 166;
+    $('fuelRule').value = 'auto';
+    $('fuelDest').value = 60;
+    $('burnRate').value = 34;
+    $('tas').value = 170;
+    compute();
+  }
+
+  document.addEventListener('input', e => {
+    if(e.target.id === 'fuelSlider') $('fuelActual').value = e.target.value;
+    if(e.target.id === 'fuelActual'){
+      $('fuelSlider').value = clamp(parseFloat(e.target.value) || 0, 0, 194);
+    }
+    compute();
+  });
+  document.addEventListener('change', compute);
+
+  buildRows();
+  compute();
+})();
+</script>
+</body>
+</html>
